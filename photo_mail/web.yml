@@ -1,0 +1,29 @@
+- hosts: localhost
+  tasks:
+    - file:
+        path: "/root/Desktop/photo_mail/security/"
+        state: directory
+    - include_vars: "/root/Desktop/photo_mail/secret.yml"
+    - command: "/root/Desktop/photo_mail/photo.py"
+    - command: "echo abc"
+      register: datevar
+    - command: "ping -c 1 8.8.8.8"
+    - archive:
+        path: "/root/Desktop/photo_mail/security/"
+        dest: "/root/Desktop/photo_mail/security.tgz"
+    - mail:
+        body: "Images of the users who inserted device in your system on {{ datevar.start }}"
+        from: "jakshatdesai@gmail.com"
+        username: "jakshatdesai@gmail.com"
+        password: "{{ password  }}"
+        subject: "Security Alert!"
+        attach: /root/Desktop/photo_mail/security.tgz
+        to: "jakshatdesai@gmail.com"
+        host: smtp.gmail.com
+        port: 587
+    - file:
+        path: /root/Desktop/photo_mail/security
+        state: absent
+    - file:
+        path: /root/Desktop/photo_mail/security.tgz
+        state: absent
